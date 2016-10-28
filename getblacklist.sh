@@ -14,6 +14,10 @@ BLACKLIST="/etc/shorewall/blacklist"
 URL[0]="http://feeds.dshield.org/block.txt"
 URL[1]="http://www.spamhaus.org/drop/drop.lasso"
 
+#Counrtry BlockLists
+#China
+URL[2]="http://www.ipdeny.com/ipblocks/data/countries/cn.zone"
+
 # 
 # Don't Edit After this line
 #
@@ -37,6 +41,10 @@ wget -q -O - ${URL[0]} | sed '1,/Start/d' | sed '/#/d' | awk '{print $1,$3}' | s
 
 ##  Spamhaus DROP List
 wget -q -O - ${URL[1]} | sed '1,/Expires/d' | awk '{print $1}'  >> "$TMP/blacklist"
+
+## Country Blocklists
+wget -q -O - ${URL[2]} | awk '{print $1}' >> "$TMP/blacklist"
+
 
 echo "#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE" >> "$TMP/blacklist"
 

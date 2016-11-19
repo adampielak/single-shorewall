@@ -1,11 +1,10 @@
 #!/bin/bash
-
-
 #
 # Shorewall blacklist file
 # blacklist file
 #
-BLACKLIST="/etc/shorewall/blacklist"
+BLACKLIST="$(pwd)/blacklist"
+CUSTOM="$(pwd)/custom-blacklist"
 
 #
 # get URL
@@ -15,8 +14,8 @@ URL[0]="http://feeds.dshield.org/block.txt"
 URL[1]="http://www.spamhaus.org/drop/drop.lasso"
 
 #Counrtry BlockLists
-#China
-URL[2]="http://www.ipdeny.com/ipblocks/data/countries/cn.zone"
+COUNTRY=()
+IPDENY="http://www.ipdeny.com/ipblocks/data/countries"
 
 # 
 # Don't Edit After this line
@@ -32,10 +31,17 @@ URL[2]="http://www.ipdeny.com/ipblocks/data/countries/cn.zone"
 }
 trap finish EXIT
 
-cat $BLACKLIST > "$TMP/blacklist"
+echo "Downloading new blacklists...."
+
+#Blank out existing blacklists
+cat /dev/null > "$TMP/blacklist"
 cat /dev/null > $BLACKLIST
 
-echo "#AUTO LIST" >> "$TMP/blacklist"
+#Add custom entries
+if [[ -s $CUSTOM ]]; then
+    cat $CUSTOM >> "$TMP/blacklist"
+fi
+
 ## top 20 attacking class C (/24)
 wget -q -O - ${URL[0]} | sed '1,/Start/d' | sed '/#/d' | awk '{print $1,$3}' | sed 's/ /\//' >> "$TMP/blacklist"
 
@@ -43,11 +49,11 @@ wget -q -O - ${URL[0]} | sed '1,/Start/d' | sed '/#/d' | awk '{print $1,$3}' | s
 wget -q -O - ${URL[1]} | sed '1,/Expires/d' | awk '{print $1}'  >> "$TMP/blacklist"
 
 ## Country Blocklists
-wget -q -O - ${URL[2]} | awk '{print $1}' >> "$TMP/blacklist"
+for BLOCK in ${COUNTRY[*]}; do
+    wget -q -O - $IPDENY/$BLOCK.zone  | awk '{print $1}' >> "$TMP/blacklist"
+done
 
+#Remove duplicate entries
+sort "$TMP/blacklist" | uniq -c | awk '{print $2}' > $BLACKLIST
 
-echo "#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE" >> "$TMP/blacklist"
-
-cat "$TMP/blacklist" > $BLACKLIST
-
-shorewall refresh &>/dev/null
+shorewall refresh

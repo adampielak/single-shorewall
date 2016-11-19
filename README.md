@@ -1,12 +1,13 @@
 Shorewall Single Interface
 ==========================
 
-Shorewall connfiguration files for a single interface setup with blacklists enabled. This is designed for use on a Linux VPS.
+Shorewall configuration for outmail-sf and outmail-ny
 
 #### Current Rules
 
-* ssh
-* http, https
+* ssh from known IP (DNS) only
+* SMTP from known network
+* webmin access from known network
 
 # Installtion
 
@@ -15,9 +16,9 @@ Shorewall connfiguration files for a single interface setup with blacklists enab
 
 apt-get install shorewall
 rm -frv /etc/shorewall
-git clone git@github.com:mckinnon81/single-shorewall.git /etc/shorewall
-shorewall refresh
-shorewall restart
+git clone https://github.com/mckinnon81/single-shorewall.git /etc/shorewall
+cd /etc/shorewall
+git checkout ait
 
 </code>
 </pre>

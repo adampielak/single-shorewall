@@ -21,28 +21,28 @@
 #?SECTION NEW
 
 # Drop packets in the INVALID state
-
 Invalid(DROP)  net    	        $FW		tcp
 
-# Drop Ping from the "bad" net zone.. and prevent your log from being flooded..
-
+# Permit all ICMP traffic 
 Ping(ACCEPT)	net		$FW
 
-# Permit all ICMP traffic FROM the firewall TO the net zone
+# Permit SMTP Traffic from AIT Networks only
+SMTP/ACCEPT     net:223.252.6.0/27              $FW
+SMTPS/ACCEPT    net:223.252.6.0/27              $FW
 
-DNS(ACCEPT)     net     $FW                                     
-SSH(ACCEPT)     net     $FW                                      
-HTTP(ACCEPT)    net     $FW
-HTTPS(ACCEPT)   net     $FW
-FTP(ACCEPT)     net     $FW
-IMAP/ACCEPT     net     $FW
-IMAPS/ACCEPT    net     $FW
-POP3/ACCEPT     net     $FW
-POP3S/ACCEPT    net     $FW
-SMTP/ACCEPT     net     $FW
-SMTPS/ACCEPT    net     $FW
+# Permit SSH Traffic
+SSH(ACCEPT)     net:223.252.6.0/27              $FW       # AIT Network
+SSH(ACCEPT)     net:58.96.34.75                 $FW       # AIT Office
+SSH(ACCEPT)     net:aw.ambient-it.com.au        $FW       # AW
+SSH(ACCEPT)     net:home.comprofix.com          $FW       # MM
 
+# Permit check_mk            
+ACCEPT          net:223.252.6.0/27                   $FW       tcp       6556 
 
-ACCEPT		$FW		net		icmp    
-ACCEPT      net     $FW     tcp     6556                        # check_mk
+# Permit webmin
+ACCEPT          net:223.252.6.0/27                   $FW       tcp       10000    # AIT Network
+ACCEPT          net:58.96.34.75                      $FW       tcp       10000    # AIT Office
+ACCEPT          net:aw.ambient-it.com.au             $FW       tcp       10000    # AW
+ACCEPT          net:home.comprofix.com               $FW       tcp       10000    # MM
+
 

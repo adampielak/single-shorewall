@@ -32,17 +32,17 @@ SMTPS/ACCEPT    net:223.252.6.0/27              $FW
 
 # Permit SSH Traffic
 SSH(ACCEPT)     net:223.252.6.0/27              $FW       # AIT Network
-SSH(ACCEPT)     net:58.96.34.75                 $FW       # AIT Office
+SSH(ACCEPT)     net:office.ambient-it.com.au    $FW       # AIT Office
 SSH(ACCEPT)     net:aw.ambient-it.com.au        $FW       # AW
-SSH(ACCEPT)     net:home.comprofix.com          $FW       # MM
+SSH(ACCEPT)     net:mm.ambient-it.com.au        $FW       # MM
 
 # Permit check_mk            
 ACCEPT          net:223.252.6.0/27                   $FW       tcp       6556 
 
 # Permit webmin
 ACCEPT          net:223.252.6.0/27                   $FW       tcp       10000    # AIT Network
-ACCEPT          net:58.96.34.75                      $FW       tcp       10000    # AIT Office
+ACCEPT          net:office.ambient-it.com.au         $FW       tcp       10000    # AIT Office
 ACCEPT          net:aw.ambient-it.com.au             $FW       tcp       10000    # AW
-ACCEPT          net:home.comprofix.com               $FW       tcp       10000    # MM
+ACCEPT          net:mm.ambient-it.com.au             $FW       tcp       10000    # MM
 
 
